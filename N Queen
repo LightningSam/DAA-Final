@@ -1,0 +1,76 @@
+#include <stdio.h>
+
+int board[20][20];
+
+int isSafe(int row, int col, int N)
+{
+    int i, j;
+
+    for(i = 0; i < col; i++)
+        if(board[row][i])
+            return 0;
+
+    for(i = row, j = col; i >= 0 && j >= 0; i--, j--)
+        if(board[i][j])
+            return 0;
+
+    for(i = row, j = col; i < N && j >= 0; i++, j--)
+        if(board[i][j])
+            return 0;
+
+    return 1;
+}
+
+int solve(int col, int N)
+{
+    int i;
+
+    if(col >= N)
+        return 1;
+
+    for(i = 0; i < N; i++)
+    {
+        if(isSafe(i, col, N))
+        {
+            board[i][col] = 1;
+
+            if(solve(col + 1, N))
+                return 1;
+
+            board[i][col] = 0;
+        }
+    }
+
+    return 0;
+}
+
+int main()
+{
+    int i, j, N;
+
+    printf("Enter board size (N): ");
+    if (scanf("%d", &N) != 1 || N < 1 || N > 20)
+    {
+        printf("Invalid input.\n");
+        return 1;
+    }
+
+    if(solve(0, N))
+    {
+        printf("\nSolution for %d-Queens:\n", N);
+        for(i = 0; i < N; i++)
+        {
+            for(j = 0; j < N; j++)
+            {
+                printf("%d ", board[i][j]);
+            }
+            printf("\n");
+        }
+    }
+    else
+    {
+        printf("\nNo Solution Exists for N = %d\n", N);
+    }
+
+    return 0;
+}
